@@ -8,8 +8,7 @@ if(process.env.NODE_ENV === 'production'){
       clientID: process.env.fbClientID,
       clientSecret: process.env.fbClientSecret,
       callback: process.env.host + "/auth/facebook/callback",
-      profileFields: ['id', 'display', 'photos'],
-      enableProof : true
+      profileFields: ['id', 'display', 'photos']
     },
     twitter: {
       consumerKey: process.env.twConsumberKey,
