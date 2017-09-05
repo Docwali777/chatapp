@@ -6,6 +6,7 @@ module.exports = () =>{
   let routes = {
     'get': {
       '/': (req, res, next) =>{
+        console.log(req.ip);
         res.render('login')
       },
       '/rooms': (req, res, next)=>{
@@ -15,12 +16,11 @@ module.exports = () =>{
         res.render('chatroom')
       },
       '/auth/facebook':  passport.authenticate('facebook'),
+      '/auth/facebook/callBack': passport.authenticate('facebook', {
+        successRedirect: '/rooms',
+        failureRedirect: '/',
+       }),
 
-      '/auth/facebook/callback': passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  }
     },
     'post': {
 

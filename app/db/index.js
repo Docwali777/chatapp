@@ -1,6 +1,6 @@
 const config = require('../config')
 const Mongoose = require('mongoose')
-
+Mongoose.Promise = global.Promise
 
 //create a user schema
 const chatUser = new Mongoose.Schema({

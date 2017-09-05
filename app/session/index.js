@@ -15,7 +15,7 @@ if(process.env.NODE_ENV === 'production'){
 } else {
   module.exports = session({
     secret: config.sessionSecret,
-    resave: false,
+    resave: true,
     saveUninitialized: true
   })
 }
