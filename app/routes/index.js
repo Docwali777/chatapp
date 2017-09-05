@@ -16,7 +16,7 @@ module.exports = () =>{
         res.render('chatroom')
       },
       '/auth/facebook':  passport.authenticate('facebook'),
-      '/auth/facebook/callBack': passport.authenticate('facebook', {
+      '/auth/facebook/callback': passport.authenticate('facebook', {
         successRedirect: '/rooms',
         failureRedirect: '/',
        }),
