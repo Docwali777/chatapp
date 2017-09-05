@@ -1,20 +1,24 @@
 "use strict"
-let h = require('../helpers/index')
+let h = require('../helpers')
 const passport = require('passport');
 
 module.exports = () =>{
   let routes = {
     'get': {
       '/': (req, res, next) =>{
-        console.log(req.ip);
+
         res.render('login')
       },
-      '/rooms': (req, res, next)=>{
-        res.render('rooms')
-      },
-      '/chat': (req, res, next )=>{
-        res.render('chatroom')
-      },
+      '/rooms': [h.isAuthenticated, (req, res, next)=>{
+        res.render('rooms', {
+          user: req.user
+        })
+      }],
+      '/chat': [h.isAuthenticated, (req, res, next )=>{
+        res.render('chatroom' , {
+          user: req.user
+        })
+      }],
       '/auth/facebook':  passport.authenticate('facebook'),
       '/auth/facebook/callback': passport.authenticate('facebook', {
         successRedirect: '/rooms',
