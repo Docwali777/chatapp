@@ -20,6 +20,16 @@ module.exports = () =>{
         successRedirect: '/rooms',
         failureRedirect: '/',
        }),
+       '/auth/twitter': passport.authenticate('twitter'),
+       '/auth/twitter/callback': passport.authenticate('twitter', {
+         successRedirect: '/rooms',
+         failureRedirect: '/'
+       }),
+       '/logout': (req, res)=>{
+         req.logout()
+         res.redirect('/')
+       }
+
 
     },
     'post': {

@@ -2,6 +2,7 @@
 const passport = require('passport');
 const config = require('../config')
 const FacebookStrategy = require('passport-facebook').Strategy
+const TwitterStrategy = require('passport-twitter').Strategy
 const db = require('../db')
 const h = require('../helpers')
 
@@ -33,4 +34,5 @@ let authProcessor = (accessToken, refreshToken, profile, done)=>{
 }
 
 passport.use(new FacebookStrategy(config.fb, authProcessor))
+passport.use(new TwitterStrategy(config.twitter, authProcessor))
 }
