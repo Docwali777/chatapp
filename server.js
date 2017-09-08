@@ -20,6 +20,6 @@ app.use(passport.session())
 app.use('/', chatCat.router)
 
 
-app.listen(PORT, ()=>{
+chatCat.ioServer(app).listen(PORT, ()=>{
   console.log(`ChatApp server on port: ${PORT}`);
 })

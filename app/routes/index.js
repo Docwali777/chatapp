@@ -1,6 +1,7 @@
 "use strict"
 let h = require('../helpers')
 const passport = require('passport');
+const config = require('../config')
 
 module.exports = () =>{
   let routes = {
@@ -11,14 +12,27 @@ module.exports = () =>{
       },
       '/rooms': [h.isAuthenticated, (req, res, next)=>{
         res.render('rooms', {
-          user: req.user
+          user: req.user,
+          host: config.host
         })
       }],
-      '/chat': [h.isAuthenticated, (req, res, next )=>{
-        res.render('chatroom' , {
-          user: req.user
-        })
+      '/chat/:id': [h.isAuthenticated, (req, res, next )=>{
+          let getRoom = h.findRoomById(req.app.locals.chatrooms, req.params.id)
+            if(getRoom === undefined){
+                  next()
+            } else {
+              res.render('chatroom' , {
+                user: req.user,
+                host: config.host,
+                room: getRoom.room,
+                roomID: getRoom.roomID
+              })
+            }
+
       }],
+      // '/chat/:room': (req, res) =>{
+      //     res.render()
+      // },
       '/auth/facebook':  passport.authenticate('facebook'),
       '/auth/facebook/callback': passport.authenticate('facebook', {
         successRedirect: '/rooms',

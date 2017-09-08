@@ -1,49 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<title>ChatCat - Topic Goes Here</title>
-	<link rel="stylesheet" href="./css/chatroomStyles.css">
+	<link rel="stylesheet" href="/css/chatroomStyles.css">
 	<script src="/js/jquery-2.1.4.min.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="/socket.io/socket.io.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(() => {
+			let socket = io('<%= host %>/chatter')
+
+			let roomID = '<%= roomID %>'
+			let user = `<%= user.fullName %>`
+			let userPic = `<%= user.profilePic %>`
+			let chatUsers = $('.chatUsers')
+			let chatInput = $('input[name = userInput]')
+			let chatMessagesDiv = $('chatMessages')
+
+			socket.on('connect', () => {
+ let sockeIDRoom = socket.id
+				socket.emit('join', {
+					roomID,
+					user,
+					userPic,
+					sockeIDRoom
+				})
+			})
+
+
+			let updateFeed = (userPic, message) => {
+				let template = `<div class="chatBlock">
+				<div class="userPic"><img src="${userPic}"></div>
+				<div class="chatMsg">${message}</div>
+			</div>`
+
+		$(chatMessagesDiv).append(template)
+			}
+
+			chatInput.keypress(function(e) {
+				if (e.key === 'Enter' && chatInput.val() !== '') {
+					socket.emit('newMessage', {
+						roomID,
+						user,
+						userPic,
+						message: chatInput.val()
+					})
+					updateFeed(userPic, chatInput.val())
+					chatInput.val('')
+				}
+
+			})
+
+
+			let userList = user => {
+
+				return `<div class="userBlock">
+			<div class="userPic"><img src="${user.userPic}" alt="<%= user.user %>"></div>
+			<div class="userName">${user.user}</div>
+		</div>`
+			}
+			socket.on('updateUserList', data => {
+
+				let parseData = JSON.parse(data)
+				let userListData = ''
+				for (let user of parseData) {
+					userListData += userList(user)
+				}
+				chatUsers.html('').html(userListData)
+			})
+console.log(io())
+			socket.on('inMessage', data =>{
+
+				updateFeed(data.userPic,data.message)
+			})
+		})
+	</script>
+
 </head>
+
 <body>
 	<div class="container">
-	<div class="row">
-		<div class="titlePanel">
-			<h1>ChatCAT | Topic Goes Here</h1>
-		</div>
-		<div class="controls">
-			<div class="userPicHolder"><img src="./img/user.jpg" alt="John Doe"></div>
-			<p class="userName">John Doe</p>
-			<a href="rooms.htm" id="roomsBtn">Rooms</a>
-			<a href="login.htm" id="logOutBtn">Logout</a>
-		</div>
-		<div class="chatListDiv">
-			<div class="chatMessagesPanel">
-				<div class="chatMessages">
-				<!-- Loop this for chat messages -->
-				<div class="chatBlock">
-					<div class="userPic"><img src="<%= user.profilePic %>"></div>
-					<div class="chatMsg">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti perferendis eius aut nesciunt necessitatibus ad nulla, qui sequi, id nam. Possimus odit aut nisi veritatis amet distinctio id officiis ipsam!</div>
+		<div class="row">
+			<div class="titlePanel">
+				<h1>ChatCAT | <%= room %> </h1>
+			</div>
+			<div class="controls">
+				<div class="userPicHolder"><img src="<%= user.profilePic %>" alt="John Doe"></div>
+				<p class="userName">
+					<%= user.fullName %>
+				</p>
+				<a href="/rooms" id="roomsBtn">Rooms</a>
+				<a href="/logout" id="logOutBtn">Logout</a>
+			</div>
+			<div class="chatListDiv">
+				<div class="chatMessagesPanel">
+					<div class="chatMessages">
+						<!-- Loop this for chat messages -->
+
+						<!-- loop end -->
+					</div>
+					<div class="typePanel">
+						<input type="text" name="userInput" placeholder="Type here and press enter">
+						<a href="#" id="uploadFile" class="fileUploadBtn">Photo</a>
+					</div>
 				</div>
-				<!-- loop end -->
-				</div>
-				<div class="typePanel">
-					<input type="text" name="userInput" placeholder="Type here and press enter">
-					<a href="#" id="uploadFile" class="fileUploadBtn">Photo</a>
+				<div class="chatUsers">
+					<!-- Loop this for chat users -->
+					<div class="userBlock">
+						<div class="userPic"><img src="/img/user.jpg" alt="John Doe"></div>
+						<div class="cuserName">John Doe</div>
+					</div>
+					<!-- loop end -->
 				</div>
 			</div>
-			<div class="chatUsers">
-			<!-- Loop this for chat users -->
-				<div class="userBlock">
-					<div class="userPic"><img src="./img/user.jpg" alt="John Doe"></div>
-					<div class="cuserName">John Doe</div>
-				</div>
-			<!-- loop end -->
-			</div>
 		</div>
-	</div>
 	</div>
 </body>
+
 </html>
